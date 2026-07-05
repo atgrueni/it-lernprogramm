@@ -25,6 +25,22 @@
 
   var state = loadState();
   var openOverlayId = null;
+  var quizAnswers = {};
+  var quizChecked = false;
+
+  function openQuest(id) {
+    openOverlayId = id;
+    quizAnswers = {};
+    quizChecked = false;
+    render();
+  }
+
+  function closeOverlay() {
+    openOverlayId = null;
+    quizAnswers = {};
+    quizChecked = false;
+    render();
+  }
 
   function level(xp) {
     return Math.floor(xp / 100) + 1;
@@ -183,8 +199,7 @@
         }
         if (status !== "locked") {
           node.addEventListener("click", function () {
-            openOverlayId = q.id;
-            render();
+            openQuest(q.id);
           });
         }
         timeline.appendChild(node);
@@ -238,8 +253,7 @@
 
     var back = el("button", "overlay-back", "← Zurück");
     back.addEventListener("click", function () {
-      openOverlayId = null;
-      render();
+      closeOverlay();
     });
     inner.appendChild(back);
 
@@ -270,14 +284,76 @@
     }
 
     var isDone = state.completed.indexOf(q.id) !== -1;
+    var hasQuiz = q.quiz && q.quiz.length > 0;
+    var quizAllCorrect = false;
+
+    if (!isDone && hasQuiz) {
+      inner.appendChild(el("h2", "", "Quiz"));
+      var quizWrap = el("div", "quiz-wrap");
+
+      q.quiz.forEach(function (qq, qi) {
+        var qBox = el("div", "quiz-question");
+        qBox.appendChild(el("p", "quiz-q-text", (qi + 1) + ". " + qq.q));
+        var optsWrap = el("div", "quiz-options");
+
+        qq.options.forEach(function (opt, oi) {
+          var label = el("label", "quiz-option");
+          if (quizChecked) {
+            if (oi === qq.correct) label.className += " correct";
+            else if (quizAnswers[qi] === oi) label.className += " wrong";
+          }
+          var input = document.createElement("input");
+          input.type = "radio";
+          input.name = "quiz-q" + qi;
+          input.value = String(oi);
+          if (quizAnswers[qi] === oi) input.checked = true;
+          input.addEventListener("change", function () {
+            quizAnswers[qi] = oi;
+            quizChecked = false;
+            renderOverlay();
+          });
+          label.appendChild(input);
+          var span = document.createElement("span");
+          span.textContent = opt;
+          label.appendChild(span);
+          optsWrap.appendChild(label);
+        });
+
+        qBox.appendChild(optsWrap);
+        if (quizChecked && quizAnswers[qi] !== qq.correct) {
+          qBox.appendChild(el("p", "quiz-explain", qq.explain || ""));
+        }
+        quizWrap.appendChild(qBox);
+      });
+
+      inner.appendChild(quizWrap);
+
+      var allAnswered = q.quiz.every(function (_, qi) { return quizAnswers[qi] !== undefined; });
+      quizAllCorrect = q.quiz.every(function (qq, qi) { return quizAnswers[qi] === qq.correct; });
+
+      if (!(quizChecked && quizAllCorrect)) {
+        var checkBtn = el("button", "quiz-check-btn", quizChecked ? "Nochmal prüfen" : "Antworten prüfen");
+        checkBtn.disabled = !allAnswered;
+        checkBtn.addEventListener("click", function () {
+          quizChecked = true;
+          renderOverlay();
+        });
+        inner.appendChild(checkBtn);
+      } else {
+        inner.appendChild(el("p", "quiz-passed", "✓ Quiz bestanden."));
+      }
+    }
+
     if (isDone) {
       inner.appendChild(el("div", "done-note", "✓ Bereits erledigt."));
-    } else {
+    } else if (!hasQuiz || (quizChecked && quizAllCorrect)) {
       var btn = el("button", "complete-btn", "Als erledigt markieren (+" + q.xp + " XP)");
       btn.addEventListener("click", function () {
         completeQuest(q.id);
       });
       inner.appendChild(btn);
+    } else {
+      inner.appendChild(el("p", "quiz-locked-note", "Beantworte das Quiz oben richtig, um diese Quest abzuschließen."));
     }
 
     overlay.appendChild(inner);
@@ -295,6 +371,8 @@
     state._levelUpMessage = after > before ? "Level up! Jetzt Level " + after + "." : null;
     saveState(state);
     openOverlayId = null;
+    quizAnswers = {};
+    quizChecked = false;
     render();
     if (state._levelUpMessage) {
       setTimeout(function () {
