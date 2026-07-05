@@ -45,6 +45,26 @@ var RANKS = [
               "Dein Mac hat 8 GB RAM und 256 GB SSD - was bedeuten die zwei Zahlen jeweils?",
               "Welcher Weg von SSD ueber RAM zur CPU passiert beim Oeffnen einer App?"
             ],
+            quiz: [
+              {
+                q: "Was passiert mit Daten im RAM, wenn der Strom ausfaellt?",
+                options: ["Sie bleiben erhalten", "Sie gehen verloren", "Sie werden automatisch auf die SSD kopiert", "Der RAM hat einen eigenen Akku dafuer"],
+                correct: 1,
+                explain: "RAM ist fluechtiger Speicher - ohne Strom ist der Inhalt weg. Deshalb speichert man wichtige Dinge auf der SSD."
+              },
+              {
+                q: "Welche Aussage ist richtig?",
+                options: ["RAM ist dauerhafter Speicher", "SSD ist dauerhafter Speicher", "RAM und SSD sind technisch dasselbe", "SSD ist immer ein externes Geraet"],
+                correct: 1,
+                explain: "Die SSD behaelt Daten auch ohne Strom - das macht sie zum dauerhaften Speicher, unabhaengig davon ob intern oder extern."
+              },
+              {
+                q: "Wenn du eine App oeffnest, passiert Folgendes:",
+                options: ["Sie wird von der CPU direkt ausgefuehrt, ganz ohne RAM", "Sie wird von der SSD in den RAM geladen und dann von der CPU verarbeitet", "Sie wird vom RAM dauerhaft auf die SSD geschrieben", "Sie laeuft nur im Cache der Tastatur"],
+                correct: 1,
+                explain: "Programme liegen dauerhaft auf der SSD, werden zur Ausfuehrung aber in den schnelleren RAM geladen."
+              }
+            ],
             reward: "+25 XP (+50% ohne Hilfe)"
           },
           {
@@ -62,6 +82,26 @@ var RANKS = [
               "Nenne die vier Kernaufgaben eines Betriebssystems in eigenen Worten.",
               "Wie kann ein Ein-Kern-Prozessor 15 Apps gleichzeitig wirken lassen?",
               "Was waere, wenn zwei Programme ungehindert denselben RAM-Bereich beschreiben duerften?"
+            ],
+            quiz: [
+              {
+                q: "Welche Aufgabe uebernimmt das Betriebssystem NICHT?",
+                options: ["Prozess-Verwaltung", "Speicher-Verwaltung", "Das Design von Webseiten, die du besuchst", "Dateisystem-Verwaltung"],
+                correct: 2,
+                explain: "Webseiten-Design macht der Browser bzw. die Webseite selbst - das OS kuemmert sich um Prozesse, Speicher, Dateisystem und Ein-/Ausgabe."
+              },
+              {
+                q: "Wie schafft es ein Ein-Kern-Prozessor, mehrere Programme gleichzeitig wirken zu lassen?",
+                options: ["Er rechnet wirklich mehrere Dinge gleichzeitig", "Das Betriebssystem schaltet sehr schnell zwischen den Prozessen hin und her", "Programme werden angehalten, bis du manuell wechselst", "Das ist technisch unmoeglich"],
+                correct: 1,
+                explain: "Das OS teilt die Rechenzeit in kleine Haeppchen auf und wechselt so schnell zwischen Prozessen, dass es fuer uns wie Gleichzeitigkeit wirkt."
+              },
+              {
+                q: "Warum verwaltet das Betriebssystem, welches Programm welchen RAM-Bereich nutzen darf?",
+                options: ["Damit sich Programme nicht gegenseitig ueberschreiben", "Damit der RAM schneller wird", "Um Strom zu sparen", "Nur zur Anzeige, ohne echte Funktion"],
+                correct: 0,
+                explain: "Ohne diese Kontrolle koennten Programme sich gegenseitig Daten im Speicher zerstoeren - das OS verhindert das."
+              }
             ],
             reward: "+25 XP (+50% ohne Hilfe)"
           },
@@ -84,6 +124,26 @@ var RANKS = [
               "Wo landest du, wenn du cd .. zweimal hintereinander ausfuehrst?",
               "Was passiert, wenn mkdir einen Namen bekommt, der schon existiert?"
             ],
+            quiz: [
+              {
+                q: "Welcher Befehl zeigt dir, wo du dich gerade befindest?",
+                options: ["ls", "cd", "pwd", "mkdir"],
+                correct: 2,
+                explain: "pwd steht fuer print working directory - zeigt den aktuellen Pfad."
+              },
+              {
+                q: "Was macht der Befehl cd ..?",
+                options: ["Erstellt einen neuen Ordner", "Wechselt eine Ebene nach oben", "Loescht den aktuellen Ordner", "Zeigt versteckte Dateien an"],
+                correct: 1,
+                explain: "Zwei Punkte stehen fuer den uebergeordneten Ordner."
+              },
+              {
+                q: "Was zeigt ls -la zusaetzlich zu einem einfachen ls?",
+                options: ["Nur Ordner, keine Dateien", "Versteckte Dateien und Detailinformationen", "Nur Videos", "Die IP-Adresse des Rechners"],
+                correct: 1,
+                explain: "-l zeigt Details (Rechte, Groesse, Datum), -a zeigt auch versteckte Dateien (die mit einem Punkt beginnen)."
+              }
+            ],
             reward: "+50 XP (+50% ohne Hilfe) - Fortschritt Richtung Terminal-Neuling"
           },
           {
@@ -104,6 +164,26 @@ var RANKS = [
               "Unterschied zwischen cd Ordner_A und cd /Ordner_A?",
               "Wie sieht der relative Pfad von Home zu Ordner_B aus?",
               "Warum ist rm -r gefaehrlicher als der Papierkorb im Finder?"
+            ],
+            quiz: [
+              {
+                q: "Ein Pfad, der mit / beginnt, ist ein...",
+                options: ["relativer Pfad", "absoluter Pfad", "versteckter Pfad", "defekter Pfad"],
+                correct: 1,
+                explain: "Der fuehrende Schraegstrich bedeutet: Start an der Wurzel des Dateisystems - das ist die Definition eines absoluten Pfads."
+              },
+              {
+                q: "Wofuer steht die Tilde (~) im Terminal?",
+                options: ["Der aktuelle Ordner", "Eine Ebene hoeher", "Das Home-Verzeichnis", "Der Papierkorb"],
+                correct: 2,
+                explain: "~ ist die Abkuerzung fuer dein persoenliches Home-Verzeichnis, z.B. /Users/Nico."
+              },
+              {
+                q: "Warum ist rm -r riskanter als eine Datei im Finder in den Papierkorb zu ziehen?",
+                options: ["Ist es gar nicht, genau gleich sicher", "Es loescht sofort und endgueltig, ohne Papierkorb", "Es fragt vorher immer nochmal nach", "Es funktioniert nur bei Bildern"],
+                correct: 1,
+                explain: "Im Terminal geloeschte Dateien landen nicht im Papierkorb - es gibt kein Zurueck."
+              }
             ],
             reward: "+25 XP (+50% ohne Hilfe) - Fortschritt Richtung Pfad-Finder"
           }
