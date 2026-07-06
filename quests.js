@@ -40,11 +40,7 @@ var RANKS = [
               "Apple-Menue oben links -> Ueber diesen Mac -> notiere RAM und Speicherplatz.",
               "cmd+Leertaste -> Aktivitaetsanzeige -> Reiter Speicher -> wie viel RAM ist gerade belegt?"
             ],
-            selfcheck: [
-              "Warum sind Daten im RAM weg, wenn der Strom ausfaellt, auf der SSD aber nicht?",
-              "Dein Mac hat 8 GB RAM und 256 GB SSD - was bedeuten die zwei Zahlen jeweils?",
-              "Welcher Weg von SSD ueber RAM zur CPU passiert beim Oeffnen einer App?"
-            ],
+            selfcheck: [],
             quiz: [
               {
                 q: "Was passiert mit Daten im RAM, wenn der Strom ausfaellt?",
@@ -78,11 +74,7 @@ var RANKS = [
               "Aktivitaetsanzeige -> Reiter CPU -> nach % CPU sortieren -> welche 3 Prozesse verbrauchen am meisten?",
               "Finder oeffnen -> Macintosh HD -> Benutzer -> dein Name -> Ordnerstruktur ansehen."
             ],
-            selfcheck: [
-              "Nenne die vier Kernaufgaben eines Betriebssystems in eigenen Worten.",
-              "Wie kann ein Ein-Kern-Prozessor 15 Apps gleichzeitig wirken lassen?",
-              "Was waere, wenn zwei Programme ungehindert denselben RAM-Bereich beschreiben duerften?"
-            ],
+            selfcheck: [],
             quiz: [
               {
                 q: "Welche Aufgabe uebernimmt das Betriebssystem NICHT?",
@@ -119,11 +111,18 @@ var RANKS = [
               "cd Desktop, danach wieder pwd - hat sich der Pfad geaendert?",
               "mkdir IT-Lernprogramm-Test anlegen, mit ls pruefen, mit cd hineinwechseln, mit cd .. zurueck."
             ],
-            selfcheck: [
-              "Was ist der Unterschied zwischen ls und ls -la?",
-              "Wo landest du, wenn du cd .. zweimal hintereinander ausfuehrst?",
-              "Was passiert, wenn mkdir einen Namen bekommt, der schon existiert?"
-            ],
+            selfcheck: [],
+            practiceCheck: {
+              instructions: "Fuehre zusaetzlich aus: mkdir woche1_check && cd woche1_check && pwd -- und fuege die Ausgabe von pwd hier ein:",
+              placeholder: "z.B. /Users/deinname/woche1_check",
+              checks: [
+                {
+                  regex: /\/woche1_check\s*$/,
+                  hint: "Die Ausgabe sollte am Ende genau auf /woche1_check enden - hast du den Ordner exakt so benannt und bist du danach mit cd hineingewechselt?",
+                  successHint: "Pfad endet korrekt auf /woche1_check."
+                }
+              ]
+            },
             quiz: [
               {
                 q: "Welcher Befehl zeigt dir, wo du dich gerade befindest?",
@@ -160,11 +159,18 @@ var RANKS = [
               "pwd pruefen, dann mit cd ~/Uebung in einem Schritt zurueck.",
               "Zum Schluss aufraeumen: rm -r ~/Uebung"
             ],
-            selfcheck: [
-              "Unterschied zwischen cd Ordner_A und cd /Ordner_A?",
-              "Wie sieht der relative Pfad von Home zu Ordner_B aus?",
-              "Warum ist rm -r gefaehrlicher als der Papierkorb im Finder?"
-            ],
+            selfcheck: [],
+            practiceCheck: {
+              instructions: "Nutze deine Uebung/Ordner_A/Ordner_B-Struktur von oben. Fuege die Ausgabe von pwd ein, nachdem du in Ordner_B gewechselt bist:",
+              placeholder: "z.B. /Users/deinname/Uebung/Ordner_A/Ordner_B",
+              checks: [
+                {
+                  regex: /\/Uebung\/Ordner_A\/Ordner_B\s*$/,
+                  hint: "Die Ausgabe sollte am Ende auf /Uebung/Ordner_A/Ordner_B enden.",
+                  successHint: "Pfad korrekt bis Ordner_B."
+                }
+              ]
+            },
             quiz: [
               {
                 q: "Ein Pfad, der mit / beginnt, ist ein...",
@@ -186,6 +192,42 @@ var RANKS = [
               }
             ],
             reward: "+25 XP (+50% ohne Hilfe) - Fortschritt Richtung Pfad-Finder"
+          },
+          {
+            id: "b-q6",
+            title: "Die Geheimbotschaft",
+            icon: "message",
+            xp: 30,
+            status: "locked",
+            theory: "Mit echo \"Text\" gibst du Text aus. Kombiniert mit > schreibst du diesen Text in eine neue Datei, statt ihn nur am Bildschirm anzuzeigen (vorhandener Inhalt wird dabei ueberschrieben). Mit cat dateiname liest du den Inhalt einer Datei wieder aus. Das ist die Grundlage fuer sehr vieles, was spaeter mit Dateien in der Programmierung passiert.",
+            practice: [
+              "Terminal oeffnen, mit cd ~ sicherstellen, dass du in deinem Home-Verzeichnis bist.",
+              "Fuehre aus: echo \"Ich habe Bronze-Woche-1 gemeistert\" > geheim.txt",
+              "Fuehre aus: cat geheim.txt",
+              "Kopiere die komplette Ausgabe von cat unten in das Feld.",
+              "Zum Aufraeumen: rm geheim.txt"
+            ],
+            selfcheck: [],
+            practiceCheck: {
+              instructions: "Fuege die Ausgabe von cat geheim.txt hier ein:",
+              placeholder: "Ausgabe von cat einfuegen ...",
+              checks: [
+                {
+                  regex: /Ich habe Bronze-Woche-1 gemeistert/,
+                  hint: "Der Text sollte genau 'Ich habe Bronze-Woche-1 gemeistert' enthalten - hast du echo exakt so eingegeben (inkl. Anfuehrungszeichen im Befehl, nicht in der Ausgabe)?",
+                  successHint: "Geheimbotschaft korrekt entschluesselt."
+                }
+              ]
+            },
+            quiz: [
+              {
+                q: "Was macht das Zeichen > in einem Terminal-Befehl wie echo \"Hallo\" > datei.txt?",
+                options: ["Vergleicht zwei Zahlen", "Leitet die Ausgabe in eine Datei um (und ueberschreibt sie)", "Loescht die Datei", "Oeffnet die Datei in einem Texteditor"],
+                correct: 1,
+                explain: "> schreibt die Ausgabe des Befehls in eine Datei. Existiert die Datei schon, wird ihr Inhalt ueberschrieben."
+              }
+            ],
+            reward: "+30 XP - deine erste komplett selbst kontrollierte Praxisaufgabe."
           }
         ]
       },
