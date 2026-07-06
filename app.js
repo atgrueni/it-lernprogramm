@@ -29,6 +29,8 @@
   var quizChecked = false;
   var practiceText = "";
   var practiceChecked = false;
+  var hintsRevealed = 0;
+  var helpUsed = false;
 
   function openQuest(id) {
     openOverlayId = id;
@@ -36,6 +38,8 @@
     quizChecked = false;
     practiceText = "";
     practiceChecked = false;
+    hintsRevealed = 0;
+    helpUsed = false;
     render();
   }
 
@@ -45,6 +49,8 @@
     quizChecked = false;
     practiceText = "";
     practiceChecked = false;
+    hintsRevealed = 0;
+    helpUsed = false;
     render();
   }
 
@@ -273,7 +279,10 @@
     var banner = el("div", "quest-banner");
     banner.style.background = topicColor + "1f";
     banner.style.borderColor = topicColor + "55";
-    banner.innerHTML = svgIcon(q.icon, 40, topicColor);
+    banner.innerHTML =
+      '<span class="banner-deco banner-deco-1" style="border-color:' + topicColor + '40"></span>' +
+      '<span class="banner-deco banner-deco-2" style="border-color:' + topicColor + '30"></span>' +
+      '<span class="banner-icon">' + svgIcon(q.icon, 48, topicColor, 2) + "</span>";
     inner.appendChild(banner);
 
     inner.appendChild(el("h1", "", q.title));
@@ -291,6 +300,34 @@
         ol.appendChild(el("li", "", step));
       });
       inner.appendChild(ol);
+    }
+
+    var isDoneForHints = state.completed.indexOf(q.id) !== -1;
+    if (!isDoneForHints && q.hints && q.hints.length) {
+      var hintBox = el("div", "hint-box");
+      if (hintsRevealed > 0) {
+        var hintList = el("div", "hint-list");
+        for (var hi = 0; hi < hintsRevealed; hi++) {
+          hintList.appendChild(el("p", "hint-line", "💡 " + q.hints[hi]));
+        }
+        hintBox.appendChild(hintList);
+      }
+      if (hintsRevealed < q.hints.length) {
+        var hintBtn = el(
+          "button",
+          "hint-btn",
+          hintsRevealed === 0 ? "Brauchst du Hilfe? Tipp anzeigen" : "Noch einen Tipp anzeigen"
+        );
+        hintBtn.addEventListener("click", function () {
+          hintsRevealed += 1;
+          helpUsed = true;
+          renderOverlay();
+        });
+        hintBox.appendChild(hintBtn);
+      } else {
+        hintBox.appendChild(el("p", "hint-line", "💡 Das waren alle Tipps für diese Quest."));
+      }
+      inner.appendChild(hintBox);
     }
 
     if (q.selfcheck && q.selfcheck.length) {
@@ -389,6 +426,18 @@
 
       if (practiceChecked) {
         var resultsWrap = el("div", "practice-results");
+
+        var looksLikeCommand = /(^|\s)(mkdir|cd|ls|pwd|echo|cat|rm)\b/i.test(practiceText.trim()) || practiceText.indexOf("&&") !== -1;
+        if (looksLikeCommand) {
+          resultsWrap.appendChild(
+            el(
+              "p",
+              "practice-check-line fail",
+              "✕ Das sieht nach dem eingegebenen Befehl aus, nicht nach der Ausgabe. Führe den Befehl im Terminal aus und kopiere das Ergebnis, das danach in einer neuen Zeile erscheint - nicht den Befehl selbst."
+            )
+          );
+        }
+
         var allPass = true;
         pc.checks.forEach(function (c) {
           var pass = c.regex.test(practiceText.trim());
@@ -434,16 +483,23 @@
     var q = findQuestById(id);
     if (!q) return;
     var before = level(state.xp);
+    var bonusXp = !helpUsed;
+    var xpGain = bonusXp ? Math.round(q.xp * 1.5) : q.xp;
     state.completed.push(id);
-    state.xp += q.xp;
+    state.xp += xpGain;
     var after = level(state.xp);
-    state._levelUpMessage = after > before ? "Level up! Jetzt Level " + after + "." : null;
+    var xpNote = bonusXp
+      ? "+" + xpGain + " XP (inkl. 50% Bonus, da ohne Hilfe geloest)"
+      : "+" + xpGain + " XP";
+    state._levelUpMessage = after > before ? "Level up! Jetzt Level " + after + ". " + xpNote : xpNote;
     saveState(state);
     openOverlayId = null;
     quizAnswers = {};
     quizChecked = false;
     practiceText = "";
     practiceChecked = false;
+    hintsRevealed = 0;
+    helpUsed = false;
     render();
     if (state._levelUpMessage) {
       setTimeout(function () {

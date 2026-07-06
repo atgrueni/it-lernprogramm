@@ -256,14 +256,27 @@ html, body {
 }
 
 .quest-banner {
-  height: 84px;
+  height: 88px;
   border-radius: 12px;
   border: 1px solid #2c3138;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
 }
+
+.banner-icon { position: relative; z-index: 1; display: flex; }
+
+.banner-deco {
+  position: absolute;
+  border: 2px solid;
+  border-radius: 50%;
+}
+
+.banner-deco-1 { width: 120px; height: 120px; right: -30px; top: -40px; }
+.banner-deco-2 { width: 70px; height: 70px; left: -20px; bottom: -30px; }
 
 .overlay h1 { font-size: 19px; margin: 0 0 4px; }
 .overlay .overlay-xp { font-size: 13px; color: #e0a458; margin: 0 0 20px; }
@@ -427,3 +440,31 @@ html, body {
 
 .practice-check-line.pass { background: #1f2e22; color: #7fd394; border: 1px solid #3c6b48; }
 .practice-check-line.fail { background: #2e1f1f; color: #e79999; border: 1px solid #7a3535; }
+
+.hint-box { margin: 4px 0 20px; }
+
+.hint-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+
+.hint-line {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e0a458;
+  background: #241d10;
+  border: 1px solid #4a3a1a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0;
+}
+
+.hint-btn {
+  width: 100%;
+  background: none;
+  color: #9a978f;
+  border: 1px dashed #3a3d43;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.hint-btn:hover { color: #e0a458; border-color: #e0a458; }

@@ -61,12 +61,17 @@ var RANKS = [
                 explain: "Programme liegen dauerhaft auf der SSD, werden zur Ausfuehrung aber in den schnelleren RAM geladen."
               }
             ],
+            hints: [
+              "Schau in der Aktivitaetsanzeige unter dem Reiter Speicher nach - dort siehst du live, wie dein RAM gerade genutzt wird.",
+              "Merksatz: RAM = Kurzzeitgedaechtnis (vergisst beim Ausschalten alles), SSD = Langzeitgedaechtnis (behaelt alles).",
+              "Bei der Frage nach dem Stromausfall: ohne Strom verliert RAM seinen Inhalt - genau das bedeutet 'fluechtig'."
+            ],
             reward: "+25 XP (+50% ohne Hilfe)"
           },
           {
             id: "b-q3",
             title: "Das Betriebssystem-Orakel",
-            icon: "device-desktop",
+            icon: "os",
             xp: 25,
             status: "locked",
             theory: "Ein Betriebssystem hat vier Kernaufgaben: Prozess-Verwaltung (wer bekommt wann Rechenzeit), Speicher-Verwaltung (RAM-Zuteilung), Dateisystem-Verwaltung (Ordnerstruktur auf der SSD) und Ein-/Ausgabe-Verwaltung (Tastatur, Bildschirm, Netzwerk).",
@@ -95,12 +100,17 @@ var RANKS = [
                 explain: "Ohne diese Kontrolle koennten Programme sich gegenseitig Daten im Speicher zerstoeren - das OS verhindert das."
               }
             ],
+            hints: [
+              "Denk an die vier Aufgaben: Prozesse, Speicher, Dateisystem, Ein-/Ausgabe. Welche davon betrifft Webseiten-Design nicht?",
+              "Ein Ein-Kern-Prozessor kann nur eine Sache gleichzeitig rechnen - das OS muss also sehr schnell zwischen Aufgaben hin und her schalten.",
+              "Ohne Speicherschutz durch das OS koennten Programme sich gegenseitig im RAM ueberschreiben - genau das verhindert die Speicher-Verwaltung."
+            ],
             reward: "+25 XP (+50% ohne Hilfe)"
           },
           {
             id: "b-q4",
             title: "Der erste Sprung ins Terminal",
-            icon: "terminal-2",
+            icon: "terminal",
             xp: 50,
             status: "locked",
             theory: "Das Terminal ist eine Text-Eingabe fuer Befehle statt Klicks. pwd zeigt den aktuellen Ort, ls listet Dateien/Ordner, ls -la zeigt auch versteckte Dateien, cd wechselt den Ordner, cd .. geht eine Ebene hoch, mkdir legt einen neuen Ordner an.",
@@ -113,8 +123,8 @@ var RANKS = [
             ],
             selfcheck: [],
             practiceCheck: {
-              instructions: "Fuehre zusaetzlich aus: mkdir woche1_check && cd woche1_check && pwd -- und fuege die Ausgabe von pwd hier ein:",
-              placeholder: "z.B. /Users/deinname/woche1_check",
+              instructions: "Oeffne dein Terminal (nicht dieses Feld!) und tippe dort diese drei Befehle ein, jeweils mit Enter bestaetigen: mkdir woche1_check, dann cd woche1_check, dann pwd. Nach dem letzten Befehl (pwd) zeigt dir das Terminal eine neue Zeile mit einem Pfad an - GENAU DIESE ANTWORT-ZEILE kopierst du hier unten rein. Nicht die Befehle selbst eintippen, sondern das Ergebnis, das danach im Terminal erscheint.",
+              placeholder: "z.B. /Users/deinname/woche1_check (die ANTWORT von pwd, nicht der Befehl)",
               checks: [
                 {
                   regex: /\/woche1_check\s*$/,
@@ -143,12 +153,17 @@ var RANKS = [
                 explain: "-l zeigt Details (Rechte, Groesse, Datum), -a zeigt auch versteckte Dateien (die mit einem Punkt beginnen)."
               }
             ],
+            hints: [
+              "Oeffne zuerst wirklich ein Terminal-Fenster (cmd+Leertaste, 'Terminal' eintippen, Enter) - dort tippst du die Befehle ein, nicht in diese Web-App.",
+              "Nach jedem Befehl druecke Enter. Das Terminal antwortet in einer neuen Zeile darunter - genau die kopierst du in das Feld hier.",
+              "Fuer den Praxis-Check: tippe im Terminal 'mkdir woche1_check' + Enter, dann 'cd woche1_check' + Enter, dann 'pwd' + Enter. Die letzte Zeile, die danach erscheint, ist deine Antwort."
+            ],
             reward: "+50 XP (+50% ohne Hilfe) - Fortschritt Richtung Terminal-Neuling"
           },
           {
             id: "b-q5",
             title: "Dateien und Pfade meistern",
-            icon: "folder",
+            icon: "paths",
             xp: 25,
             status: "locked",
             theory: "Absoluter Pfad: kompletter Weg ab der Wurzel, beginnt mit /. Relativer Pfad: Weg ausgehend vom aktuellen Standort. Punkt = aktueller Ordner, zwei Punkte = eine Ebene hoeher, Tilde = Home-Verzeichnis.",
@@ -161,8 +176,8 @@ var RANKS = [
             ],
             selfcheck: [],
             practiceCheck: {
-              instructions: "Nutze deine Uebung/Ordner_A/Ordner_B-Struktur von oben. Fuege die Ausgabe von pwd ein, nachdem du in Ordner_B gewechselt bist:",
-              placeholder: "z.B. /Users/deinname/Uebung/Ordner_A/Ordner_B",
+              instructions: "Nutze deine Uebung/Ordner_A/Ordner_B-Struktur von oben (im Terminal, nicht hier eintippen). Wechsle mit cd in Ordner_B und fuehre dort pwd aus. Kopiere nur die ANTWORT-Zeile, die das Terminal danach zeigt, hier hinein - nicht die Befehle selbst.",
+              placeholder: "z.B. /Users/deinname/Uebung/Ordner_A/Ordner_B (die ANTWORT von pwd, nicht der Befehl)",
               checks: [
                 {
                   regex: /\/Uebung\/Ordner_A\/Ordner_B\s*$/,
@@ -191,6 +206,11 @@ var RANKS = [
                 explain: "Im Terminal geloeschte Dateien landen nicht im Papierkorb - es gibt kein Zurueck."
               }
             ],
+            hints: [
+              "~ bringt dich immer sofort zu deinem Home-Verzeichnis, egal wo du im Terminal gerade stehst.",
+              "mkdir -p erstellt mehrere verschachtelte Ordner auf einmal - du brauchst dafuer keine drei einzelnen mkdir-Befehle.",
+              "Nach cd Uebung/Ordner_A/Ordner_B zeigt pwd dir den kompletten Pfad bis Ordner_B an - genau diese Zeile brauchst du fuer den Praxis-Check."
+            ],
             reward: "+25 XP (+50% ohne Hilfe) - Fortschritt Richtung Pfad-Finder"
           },
           {
@@ -209,8 +229,8 @@ var RANKS = [
             ],
             selfcheck: [],
             practiceCheck: {
-              instructions: "Fuege die Ausgabe von cat geheim.txt hier ein:",
-              placeholder: "Ausgabe von cat einfuegen ...",
+              instructions: "Fuehre die Befehle im Terminal aus (nicht hier eintippen). Nach cat geheim.txt zeigt das Terminal deine Botschaft als Antwort an - genau diese Zeile, nicht den Befehl, kopierst du hier hinein.",
+              placeholder: "Die ANTWORT von cat einfuegen, nicht den Befehl selbst ...",
               checks: [
                 {
                   regex: /Ich habe Bronze-Woche-1 gemeistert/,
@@ -226,6 +246,11 @@ var RANKS = [
                 correct: 1,
                 explain: "> schreibt die Ausgabe des Befehls in eine Datei. Existiert die Datei schon, wird ihr Inhalt ueberschrieben."
               }
+            ],
+            hints: [
+              "echo gibt einfach nur Text aus - probier zuerst testweise echo \"Test\" ohne > im Terminal, dann siehst du den Text direkt.",
+              "Das > danach lenkt genau diesen Text in eine Datei um, statt ihn nur am Bildschirm anzuzeigen.",
+              "Nach cat geheim.txt siehst du deine Botschaft erneut ausgegeben - genau diese Zeile ist deine Antwort fuer den Praxis-Check, nicht der echo-Befehl selbst."
             ],
             reward: "+30 XP - deine erste komplett selbst kontrollierte Praxisaufgabe."
           }
