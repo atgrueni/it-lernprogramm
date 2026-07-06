@@ -27,11 +27,15 @@
   var openOverlayId = null;
   var quizAnswers = {};
   var quizChecked = false;
+  var practiceText = "";
+  var practiceChecked = false;
 
   function openQuest(id) {
     openOverlayId = id;
     quizAnswers = {};
     quizChecked = false;
+    practiceText = "";
+    practiceChecked = false;
     render();
   }
 
@@ -39,6 +43,8 @@
     openOverlayId = null;
     quizAnswers = {};
     quizChecked = false;
+    practiceText = "";
+    practiceChecked = false;
     render();
   }
 
@@ -88,7 +94,10 @@
 
   function renderBadgeChip(name, earned) {
     var chip = el("div", "badge-chip" + (earned ? "" : " locked"));
-    chip.textContent = (earned ? "★ " : "– ") + name;
+    chip.innerHTML = svgIcon("star", 14, earned ? "#d8c9a8" : "#55534d");
+    var span = document.createElement("span");
+    span.textContent = name;
+    chip.appendChild(span);
     return chip;
   }
 
@@ -188,7 +197,9 @@
         var status = questStatus(q, ordered);
         var node = el("div", "node" + (status === "locked" ? " disabled" : ""));
         var dotClass = "node-dot" + (status === "done" ? " done" : status === "active" ? " active" : "");
-        var dotEl = el("div", dotClass, status === "done" ? "✓" : (q.icon === "flag" ? "⚑" : "•"));
+        var dotIconName = status === "done" ? "check" : status === "locked" ? "lock" : q.icon;
+        var dotIconColor = status === "done" ? "#7fd394" : status === "locked" ? "#55534d" : status === "active" ? "#e0a458" : "#9a978f";
+        var dotEl = el("div", dotClass, svgIcon(dotIconName, status === "locked" ? 12 : 14, dotIconColor));
         node.appendChild(dotEl);
         var titleClass = "node-title" + (status === "done" ? " done" : status === "locked" ? " locked" : "");
         node.appendChild(el("p", titleClass, q.title));
@@ -214,7 +225,7 @@
 
     var bossCard = el("div", "boss-card");
     var bossHead = el("div", "boss-head");
-    bossHead.appendChild(el("div", "node-dot boss", "⚔"));
+    bossHead.appendChild(el("div", "node-dot boss", svgIcon("boss", 16, "#e07070")));
     var bossText = el("div", "");
     bossText.appendChild(el("p", "boss-title", "Boss-Fight: " + rank.boss.title));
     bossText.appendChild(el("p", "boss-desc", rank.boss.description));
@@ -241,6 +252,7 @@
 
   function renderOverlay() {
     var existing = document.getElementById("quest-overlay");
+    var savedScroll = existing ? existing.scrollTop : 0;
     if (existing) existing.remove();
     if (!openOverlayId) return;
 
@@ -256,6 +268,13 @@
       closeOverlay();
     });
     inner.appendChild(back);
+
+    var topicColor = TOPIC_COLORS[q.icon] || "#c58b4a";
+    var banner = el("div", "quest-banner");
+    banner.style.background = topicColor + "1f";
+    banner.style.borderColor = topicColor + "55";
+    banner.innerHTML = svgIcon(q.icon, 40, topicColor);
+    inner.appendChild(banner);
 
     inner.appendChild(el("h1", "", q.title));
     inner.appendChild(el("p", "overlay-xp", q.xp + " XP" + (q.reward ? " · " + q.reward : "")));
@@ -344,20 +363,70 @@
       }
     }
 
+    var hasPractice = !isDone && !!q.practiceCheck;
+    var practiceOk = false;
+
+    if (hasPractice) {
+      inner.appendChild(el("h2", "", "Praxis-Check"));
+      var pc = q.practiceCheck;
+      if (pc.instructions) inner.appendChild(el("p", "theory", pc.instructions));
+
+      var textarea = document.createElement("textarea");
+      textarea.className = "practice-input";
+      textarea.placeholder = pc.placeholder || "Terminal-Ausgabe hier einfügen ...";
+      textarea.value = practiceText;
+      textarea.addEventListener("input", function (e) {
+        practiceText = e.target.value;
+      });
+      inner.appendChild(textarea);
+
+      var checkPracticeBtn = el("button", "quiz-check-btn", "Ausgabe prüfen");
+      checkPracticeBtn.addEventListener("click", function () {
+        practiceChecked = true;
+        renderOverlay();
+      });
+      inner.appendChild(checkPracticeBtn);
+
+      if (practiceChecked) {
+        var resultsWrap = el("div", "practice-results");
+        var allPass = true;
+        pc.checks.forEach(function (c) {
+          var pass = c.regex.test(practiceText.trim());
+          if (!pass) allPass = false;
+          var line = el(
+            "p",
+            "practice-check-line " + (pass ? "pass" : "fail"),
+            (pass ? "✓ " : "✕ ") + (pass ? c.successHint || "Erkannt" : c.hint)
+          );
+          resultsWrap.appendChild(line);
+        });
+        inner.appendChild(resultsWrap);
+        practiceOk = allPass;
+        if (allPass) inner.appendChild(el("p", "quiz-passed", "✓ Praxis-Check bestanden."));
+      }
+    }
+
+    var quizOk = !hasQuiz || (quizChecked && quizAllCorrect);
+    var practiceGateOk = !hasPractice || practiceOk;
+
     if (isDone) {
       inner.appendChild(el("div", "done-note", "✓ Bereits erledigt."));
-    } else if (!hasQuiz || (quizChecked && quizAllCorrect)) {
+    } else if (quizOk && practiceGateOk) {
       var btn = el("button", "complete-btn", "Als erledigt markieren (+" + q.xp + " XP)");
       btn.addEventListener("click", function () {
         completeQuest(q.id);
       });
       inner.appendChild(btn);
     } else {
-      inner.appendChild(el("p", "quiz-locked-note", "Beantworte das Quiz oben richtig, um diese Quest abzuschließen."));
+      var missing = [];
+      if (!quizOk) missing.push("Quiz noch nicht richtig beantwortet");
+      if (!practiceGateOk) missing.push("Praxis-Check noch nicht bestanden");
+      inner.appendChild(el("p", "quiz-locked-note", missing.join(" · ") + " - erst dann kannst du abschließen."));
     }
 
     overlay.appendChild(inner);
     document.body.appendChild(overlay);
+    overlay.scrollTop = savedScroll;
   }
 
   function completeQuest(id) {
@@ -373,6 +442,8 @@
     openOverlayId = null;
     quizAnswers = {};
     quizChecked = false;
+    practiceText = "";
+    practiceChecked = false;
     render();
     if (state._levelUpMessage) {
       setTimeout(function () {
